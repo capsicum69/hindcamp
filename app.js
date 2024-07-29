@@ -21,10 +21,7 @@ const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewsRoutes = require('./routes/reviews');
 
-// const dbUrl = 'mongodb://localhost:27017/hind-camp';
-// const dbUrl = process.env.DB_URL;
-
-const dbUrl = 'mongodb://localhost:27017/hind-camp';
+const dbUrl = 'mongodb://localhost:27017/hind-camp' || process.env.DB_URL;
 
 mongoose.connect(dbUrl);
 
