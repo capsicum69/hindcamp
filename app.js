@@ -2,8 +2,6 @@ if (process.env.NODE_ENV !== "production") {
   require('dotenv').config();
 }
 
-console.log(process.env.SECRET)
-
 const express = require('express');
 const path = require('path');
 const ejsMate = require('ejs-mate');
@@ -24,7 +22,10 @@ const campgroundRoutes = require('./routes/campgrounds');
 const reviewsRoutes = require('./routes/reviews');
 
 // const dbUrl = 'mongodb://localhost:27017/hind-camp';
-const dbUrl = process.env.DB_URL;
+// const dbUrl = process.env.DB_URL;
+
+const dbUrl = 'mongodb://localhost:27017/hind-camp';
+
 mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
@@ -47,11 +48,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 app.set('public', path.join(__dirname, 'public'));
 
+const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   touchAfter: 24 * 60 * 60,
   crypto: {
-    secret: 'thisshouldbeabettersecret!'
+    secret
   }
 });
 
@@ -62,12 +65,12 @@ store.on("error", function (e) {
 const sessionConfig = {
   store,
   name: 'session',
-  secret: 'changethissecret',
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: true,
+    // secure: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
@@ -153,6 +156,8 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render('error', { err });
 })
 
-app.listen(3000, () => {
-  console.log('Serving on port 3000')
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log('Serving on port ${port}')
 })

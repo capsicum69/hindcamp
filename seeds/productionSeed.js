@@ -4,8 +4,16 @@ const Review = require('../models/review');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 
+if (process.env.NODE_ENV !== "production") {
+  require('dotenv').config();
+}
 
-mongoose.connect('mongodb://localhost:27017/hind-camp');
+const dbUrl = process.env.DB_URL;
+
+mongoose.connect(dbUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -19,10 +27,9 @@ const seedDB = async() => {
   await Campground.deleteMany({});
   await Review.deleteMany({});
   for (let i = 0; i < cities.length; i++) {
-    // const random1000 = Math.floor(Math.random() * 1000)
     const price = Math.floor(Math.random() * 10000) + 2000;
     const camp = new Campground({
-      author: '66a7d20d707b5b5bfa69f5f5',
+      author: '66a78130be4c5e50c04cd02b',
       location: `${cities[i].city}, ${cities[i].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       geometry: {
@@ -43,13 +50,13 @@ const seedDB = async() => {
           filename: 'HindCamp/qkiwjxdapfeoxqblyps0',
         }
       ],
-      description: '  Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus numquam voluptate exercitationem harum quisquam possimus dolores delectus optio ex? Illo ad error accusantium veritatis provident totam enim! Quo, velit eveniet.',
+      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus numquam voluptate exercitationem harum quisquam possimus dolores delectus optio ex? Illo ad error accusantium veritatis provident totam enim! Quo, velit eveniet.',
       price
-    })
+    });
     await camp.save();
   }
 }
 
-seedDB().then( () => {
+seedDB().then(() => {
   mongoose.connection.close();
-})
+});
