@@ -13,7 +13,7 @@ module.exports.register = async(req, res) => {
       if (err) {
         return next();
       }
-      req.flash('success', 'Welcome to Yelp Camp!');
+      req.flash('success', 'Welcome to HindCamp!');
       res.redirect('/campgrounds');
     });
   } catch (err) {
